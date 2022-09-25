@@ -1,0 +1,25 @@
+{
+  "name": "handsister",
+  "version": "1.0.0",
+  "description": "一个让妹子手把手带你一起行走的仓库,就负责学,想多了解,可以去找萌妹子.",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "webpack serve --config webpack.dev.config.js",
+    "build": "webpack --config webpack.prod.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/linlincat/handyToUse.git"
+  },
+  "author": "bushiwo",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.14.8",
+    "@babel/preset-env": "^7.14.8",
+    "babel-loader": "^8.2.2",
+    "html-webpack-plugin": "^5.3.2",
+    "webpack": "^5.46.0",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2"
+  }
+}
