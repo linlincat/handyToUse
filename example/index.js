@@ -1,4 +1,4 @@
-import HandSister from "../src/index.js";
+import HandSister from "../src/HandSister/index.js";
 const a = new HandSister({
     x:10,
     y:10,

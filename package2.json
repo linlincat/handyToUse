@@ -1,8 +1,8 @@
 {
   "name": "handsister",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "一个让妹子手把手带你一起行走的仓库,就负责学,想多了解,可以去找萌妹子.",
-  "main": "src/HandSister/index.js",
+  "main": "dist/HandSister.js",
   "scripts": {
     "dev": "webpack serve --config webpack.dev.config.js",
     "build": "webpack --config webpack.prod.config.js"
@@ -21,8 +21,5 @@
     "webpack": "^5.46.0",
     "webpack-cli": "^4.7.2",
     "webpack-dev-server": "^3.11.2"
-  },
-  "dependencies": {
-    "handsister": "^1.0.1"
   }
 }
