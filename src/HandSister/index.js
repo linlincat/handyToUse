@@ -8,28 +8,13 @@ export default class HandSister {
       throw Error("HandSister 绑定元素必须有父元素");
     }
 
-    //用来保存所有的实例
-    HandSister._instanceList = [];
-    //自增的int类型ID
-    HandSister.ID = 1;
-
-    HandSister.destroyAll = function () {
-      for (let i = 0; i < HandSister._instanceList.length; i++) {
-        console.log(HandSister._instanceList.length, "HandSister._instanceList.length")
-        const instance = HandSister._instanceList[i];
-        instance.destroy();
-        i--;   // 由于 instance.destroy() 执行的是splice(index, 1) 所以加了i-- 
-        //  i === HandSister._instanceList.length 的时候直接HandSister._instanceList = [] 会更直接一些
-      }
-    };
-
     this.config = {
       ...{
         id: HandSister.ID,
-        x: HandSister.x, // 相对于父元素的x坐标
-        y: HandSister.y,
-        width: HandSister.width,
-        height: HandSister.height,
+        x: getElX(domEl) || HandSister.x, // 相对于父元素的x坐标
+        y: getElY(domEl) || HandSister.y,
+        width: getElWidth(domEl) || HandSister.width,
+        height: getElHeight(domEl) || HandSister.height,
         autoCount: HandSister.autoCount,
       },
       ...config,
@@ -48,6 +33,9 @@ export default class HandSister {
     this.width = null; //宽度
     this.height = null; //高度
 
+    // this.autoCount = false; //是否自动计算下一个位置的值
+
+    this.watchParentInterval = null;
     this._init();
   }
 
@@ -62,6 +50,10 @@ export default class HandSister {
     this.parentEl.style.overflow = "hidden";
     //监听父元素的尺寸
     this.watchParentInterval = setInterval(this.resize.bind(this), 300);
+    //更新HandSister的静态参数  如果 this._computedConfig(); 更改了this.autoCount
+    // if (this.autoCount) {
+    //   this._updateStaticConfig();
+    // }
   }
 
   /**
@@ -79,12 +71,18 @@ export default class HandSister {
     }
   }
 
+  /**
+   *
+   * @param {*} config 换算一下属性
+   */
   _computedConfig() {
     this.x = unify(config.x, this.parentElWidth); //x坐标
     this.y = unify(config.y, this.parentElHeight); //y坐标
     this.width = unify(config.width, this.parentElWidth); //宽度
     this.height = unify(config.height, this.parentElHeight); //高度
+    // this.autoCount = config.autoCount; //是否自动计算下一个将要添加的元素的位置
   }
+
 
   /**
    * 设置元素样式
@@ -106,7 +104,7 @@ export default class HandSister {
     const index = HandSister._instanceList.findIndex((instance) => {
       return this.id === instance.id;
     });
-    HandSister._instanceList.splice(index, 1);  
+    HandSister._instanceList.splice(index, 1);
   }
 }
 
@@ -114,6 +112,25 @@ HandSister.x = 0;
 HandSister.y = 0;
 HandSister.width = "100px";
 HandSister.height = "100px";
+//是否开启智能计算位置功能
+HandSister.autoCount = false;
+//用来保存所有的实例
+HandSister._instanceList = [];
+//自增的int类型ID
+HandSister.ID = 1;
+
+HandSister.destroyAll = function () {
+  for (let i = 0; i < HandSister._instanceList.length; i++) {
+    console.log(
+      HandSister._instanceList.length,
+      "HandSister._instanceList.length"
+    );
+    const instance = HandSister._instanceList[i];
+    instance.destroy();
+    i--; // 由于 instance.destroy() 执行的是splice(index, 1) 所以加了i--
+    //  i === HandSister._instanceList.length 的时候直接HandSister._instanceList = [] 会更直接一些
+  }
+};
 
 /**
  *
@@ -160,6 +177,36 @@ export function unify(str = "", refer = getWindowSize().width) {
       num: (numObj.num * parseFloat(refer)) / 100,
       originUnit: numObj.unit,
     };
+  }
+}
+
+export function getElWidth(domEl) {
+  return domEl.offsetWidth
+}
+
+export function getElHeight(domEl) {
+  return domEl.offsetHeight
+}
+
+export function getElX(domEl) {
+  const cssStyle = getComputedStyle(domEl)
+  let isAbsolute = cssStyle.position === 'absolute'
+  if(isAbsolute) {
+      let left = cssStyle.left
+      return left
+  }else{
+      return ''
+  }
+}
+
+export function getElY(domEl) {
+  const cssStyle = getComputedStyle(domEl)
+  let isAbsolute = cssStyle.position === 'absolute'
+  if(isAbsolute) {
+      let top = cssStyle.top
+      return top
+  }else{
+      return ''
   }
 }
 
